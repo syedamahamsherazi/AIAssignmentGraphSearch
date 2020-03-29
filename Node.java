@@ -26,30 +26,17 @@ public class Node {
         return state;
     }
 
-    public void setState(int state) {
-        this.state = state;
-    }
-
     public int getAction() {
         return action;
-    }
-
-    public void setAction(int action) {
-        this.action = action;
     }
 
     public int getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
     public Node getParent() {
         return parent;
     }
-
     
 }
 
