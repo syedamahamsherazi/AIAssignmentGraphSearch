@@ -19,9 +19,9 @@ import java.util.Stack;
 
 public class GraphSearch {
 
-    //declaring public variables
-
-    public static int noOfStates = 0, noOfActions = 0, noOfTestCases = 0;
+    public static int noOfStates = 0;
+    public static int noOfActions = 0;
+    public static int noOfTestCases = 0;
     public static String[] stateDescriptions;
     public static String[] ruleDescriptions;
     public static int[][] transitionTable;
@@ -32,17 +32,14 @@ public class GraphSearch {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        //initializing
-        System.out.println("Input Here:");
+        System.out.println("Input Here in Correct Format:");
         noOfStates = sc.nextInt();
         noOfActions = sc.nextInt();
         noOfTestCases = sc.nextInt();
-
         stateDescriptions = new String[noOfStates];
         ruleDescriptions = new String[noOfActions];
         transitionTable = new int[noOfStates][noOfActions];
         testCases = new String[noOfTestCases];
-
         sc.nextLine();
         sc.nextLine();
         for (int i = 0; i < noOfStates; i++) {
@@ -65,23 +62,23 @@ public class GraphSearch {
             testCases[i] = sc.nextLine();
         }
 
-        String[] temp;
-        Node result;
+        String[] tCase;
+        Node goal;
         for(int i=0;i<noOfTestCases;i++){
-            temp=testCases[i].split("\t");
-            result=graphSearch(temp[0], temp[1]);
+            tCase = testCases[i].split("\t");
+            goal=graphSearch(tCase[0], tCase[1]);
             System.out.println("");
-            printResult(result);            
+            print(goal);            
         }
         System.out.println("");
     }
-    public static Node graphSearch(String initialState, String finalState){
-        int initStateNum=getStateNumber(initialState);
-        int goalStateNum=getStateNumber(finalState);
-        Node initialNode=new Node(initStateNum, -1, 0, null);
-        frontier.add(initialNode);
+    public static Node graphSearch(String startState, String goalState){
+        int startStateNum=getStateNumber(startState);
+        int goalStateNum=getStateNumber(goalState);
+        Node startNode=new Node(startStateNum, -1, 0, null);
+        frontier.add(startNode);
         exploredSet.clear();
-        do{
+        while(true){
             if(frontier.isEmpty())
                 return new Node(-1, -1, -1, null);
             
@@ -90,14 +87,14 @@ public class GraphSearch {
                 return leafNode;
             
             exploredSet.add(leafNode.getState());
-            Node childs[] = getChildNodes(leafNode);
+            Node childNodes[] = getChildNodes(leafNode);
             int i=0;
-            while(i<childs.length){
-                if(!isNodeVisited(childs[i]))
-                    frontier.add(childs[i]);
+            while(i<childNodes.length){
+                if(!isNodeVisited(childNodes[i]))
+                    frontier.add(childNodes[i]);
                 i++;
             }
-        }while(true);
+        }
     }
     public static int getStateNumber(String state){
         int i=0;
@@ -106,12 +103,12 @@ public class GraphSearch {
         }
         return i;
     }
-    public static Node[] getChildNodes(Node parent){
-        Node[] childs=new Node[noOfActions];
+    public static Node[] getChildNodes(Node node){
+        Node[] childNodes=new Node[noOfActions];
         for(int i=0;i<noOfActions;i++){
-            childs[i]=new Node(transitionTable[parent.getState()][i], i, parent.getCost()+1, parent);
+            childNodes[i]=new Node(transitionTable[node.getState()][i], i, node.getCost()+1, node);
         }
-        return childs;
+        return childNodes;
     }
     public static boolean isNodeVisited(Node node){
         if(isNodeExistInExploredSet(node) || isNodeExistInFrontier(node))
@@ -139,9 +136,9 @@ public class GraphSearch {
         else
             return false;
     }        
-    public static void printResult(Node node){
+    public static void print(Node node){
         if(node.getState()==-1)
-            System.out.println("No Solution Exist");
+            System.out.println("No Solution");
         else{
             Stack<String> s=new Stack<String>();
             while(node.getParent()!=null){
@@ -151,8 +148,6 @@ public class GraphSearch {
             
             for(int i=s.size()-1;i>=0;i--){
                 System.out.print(s.pop());
-                if(i!=0)
-                    System.out.print(" => ");
             }
         }
     }
